@@ -1,0 +1,33 @@
+name: Testomatio Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      grep:
+        description: 'Tests to grep'
+        required: false
+        default: ''
+      run:
+        description: 'Testomatio run ID'
+        required: false
+        default: ''
+      testomatio:
+        description: 'Testomatio key'
+        required: false
+        default: ''
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run CodeceptJS Tests
+        run: npx codeceptjs run --grep "${{ github.event.inputs.grep }}"
+        env:
+          TESTOMATIO: ${{ github.event.inputs.testomatio }}
+          TESTOMATIO_RUN: ${{ github.event.inputs.run }}
